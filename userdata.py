@@ -8,14 +8,16 @@ from flask_restful import Resource, reqparse
 from app import db, marsh
 from models.user import User, UserSchema
 
+user_schema = UserSchema(many=False)
+
 class GetUserdata(Resource):
     parser = reqparse.RequestParser()
 
     @jwt_required
-    def get(self, userId):
+    def get(self, user_id):
         user = (
 			User.query
-			.filter(User.userId == userId)
+			.filter(User.userId == user_id)
 			.one_or_none()
 		)
         
@@ -23,17 +25,5 @@ class GetUserdata(Resource):
             return { "message": "The specified user does not exist." }, 404
 
         else:
-            userDump = {
-                "userId": user.userId,
-                "username": user.username,
-                # TODO: Country
-                # TODO: Club ID
-                # TODO: Club Name
-                # TODO: Last Login
-                # TODO: Current Server,
-                # TODO: Coins
-                # TODO: Friend Count
-                # TODO: Is Member
-            }
-            
-            return userDump
+            user_dump = user_schema.dump(user).data
+            return user_dump

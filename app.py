@@ -27,10 +27,11 @@ migrate = Migrate(app, db)
 
 from authentication import Authorize
 from userdata import GetUserdata
-from gamedata import ListColors
+from gamedata import ListColors, ListItems
 
 # Register endpoints
 api.add_resource(Authorize, '/auth/signin')
 api.add_resource(GetUserdata, '/userdata/<int:userId>')
-api.add_resource(ListColors, '/colors')
+api.add_resource(ListColors, '/gamedata/colors')
+api.add_resource(ListItems, '/gamedata/itemdata/<string:item_type>')
 # Setup

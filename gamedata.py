@@ -6,14 +6,43 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from flask_restful import Resource, reqparse
 
 from app import db, marsh
-from models.colors import Color, ColorSchema
+
+from models.color import Color, ColorSchema
+from models.game_item import GameItem, GameItemSchema
+from models.item_type import ItemType
 
 color_schema = ColorSchema(many=True)
+item_schema = GameItemSchema(many=False)
+item_multi_schema = GameItemSchema(many=True)
 
 class ListColors(Resource):
     def get(self):
         colors = Color.query.all()
         return color_schema.dump(colors).data
-#class ListServers(Resource):
-    #parser = reqparse.RequestParser()
-	#parser.add_argument("", type=str, required=True)
+
+class ListItems(Resource):
+    @jwt_required
+    def get(self, item_type):
+        if item_type in [option.value.lower() for option in ItemType]:
+            item_list = []
+
+            item_set = (
+                GameItem.query
+                .filter(GameItem.itemType == item_type)
+                .all()
+            )
+
+            for item in item_set:
+                item_row = (
+                    item.gameItemId,
+                    item.itemType.value,
+                    item.itemName,
+                    item.description
+                )
+
+                item_list.append(item_row)
+            
+            return item_list
+
+        else:
+            return { "message": "Could not locate any items of that type." }, 404
