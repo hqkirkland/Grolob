@@ -1,0 +1,7 @@
+__pycache__/
+assets/
+venv/
+config.py
+.vscode/
+*.pyc
+*.whl
