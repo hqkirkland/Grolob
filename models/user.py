@@ -7,6 +7,7 @@ class User(db.Model):
     password = db.Column("Password", db.String(64), nullable=False)
     email = db.Column("Email", db.String(255), nullable=False)
     appearance = db.Column("Appearance", db.String(72), nullable=False)
+    gameTicket = db.Column("GameTicket", db.String(30), nullable=True)
 
     def __repr__():
         return "<User %s>" % (username)
@@ -14,6 +15,6 @@ class User(db.Model):
 class UserSchema(marsh.ModelSchema):
     class Meta:
         model = User
-        exclude = ('password', 'email')
+        exclude = ('password', 'email', 'gameTicket')
         ordered = True
         sqla_session = db.session
