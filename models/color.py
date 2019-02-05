@@ -6,7 +6,7 @@ from app import db, marsh
 from models.item_type import ItemType
 
 class Color(db.Model):
-    __tablename__ = "Colors"
+    __tablename__ = "Color"
     colorId = db.Column("Id", db.Integer, primary_key=True)
     itemType = db.Column("ItemType", db.Enum(ItemType), nullable=False, default=ItemType.Clothing)
     channel1 = db.Column("Channel1", db.BigInteger, nullable=False)

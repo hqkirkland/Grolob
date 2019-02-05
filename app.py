@@ -26,12 +26,13 @@ marsh = Marshmallow(app)
 migrate = Migrate(app, db)
 
 from authentication import Authorize
-from userdata import GetUserdata
+from userdata import GetUserdata, IssueTicket
 from gamedata import ListColors, ListItems
 
 # Register endpoints
 api.add_resource(Authorize, '/auth/signin')
-api.add_resource(GetUserdata, '/userdata/<int:userId>')
+api.add_resource(GetUserdata, '/userdata/<int:user_id>')
 api.add_resource(ListColors, '/gamedata/colors')
 api.add_resource(ListItems, '/gamedata/itemdata/<string:item_type>')
+api.add_resource(IssueTicket, '/userdata/issueticket')
 # Setup

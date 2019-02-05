@@ -7,6 +7,7 @@ from flask_restful import Resource, reqparse
 
 from app import db, marsh
 from models.user import User, UserSchema
+from models.betaticket import BetaTicket, BetaTicketSchema
 
 user_schema = UserSchema(many=False)
 
@@ -23,7 +24,7 @@ class Authorize(Resource):
 			.filter(User.password == hashlib.sha256(str(login["password"]).encode('utf-8')).hexdigest())
 			.one_or_none()
 		)
-
+		
 		if user is None:
 			return {
 				"message": "The username or password is invalid." 
@@ -33,6 +34,7 @@ class Authorize(Resource):
 			access_token = create_access_token(identity=user.userId, fresh=True)
 			refresh_token = create_refresh_token(user.userId)
 			return {
+				"userId": user.userId,
 				"access_token": access_token, 
 				"refresh_token": refresh_token 
 				}, 200

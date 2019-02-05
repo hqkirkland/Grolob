@@ -21,28 +21,34 @@ class ListColors(Resource):
         return color_schema.dump(colors).data
 
 class ListItems(Resource):
-    @jwt_required
     def get(self, item_type):
-        if item_type in [option.value.lower() for option in ItemType]:
-            item_list = []
-
+        item_list = []
+        
+        if item_type == "all":
+            item_set = (
+                GameItem.query
+                .all()
+            )
+        
+        elif item_type in [option.value.lower() for option in ItemType]:
             item_set = (
                 GameItem.query
                 .filter(GameItem.itemType == item_type)
                 .all()
             )
 
-            for item in item_set:
-                item_row = (
-                    item.gameItemId,
-                    item.itemType.value,
-                    item.itemName,
-                    item.description
-                )
-
-                item_list.append(item_row)
-            
-            return item_list
-
         else:
             return { "message": "Could not locate any items of that type." }, 404
+
+        for item in item_set:
+            item_row = (
+                item.gameItemId,
+                item.itemType.value,
+                item.itemName,
+                item.description,
+                item.layered.value
+            )
+
+            item_list.append(item_row)
+            
+        return item_list
