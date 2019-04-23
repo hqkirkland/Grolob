@@ -34,6 +34,7 @@ class ListItems(Resource):
             item_set = (
                 GameItem.query
                 .filter(GameItem.itemType == item_type)
+                .filter(GameItem.available)
                 .all()
             )
 

@@ -24,7 +24,7 @@ class Authorize(Resource):
 			.filter(User.password == hashlib.sha256(str(login["password"]).encode('utf-8')).hexdigest())
 			.one_or_none()
 		)
-		
+
 		if user is None:
 			return {
 				"message": "The username or password is invalid." 

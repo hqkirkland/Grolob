@@ -15,7 +15,8 @@ class GameItem(db.Model):
     layered = db.Column("Layered", db.Enum(SingleEnum), nullable=False, default=SingleEnum.N)
     cost = db.Column("Cost", db.Integer, nullable=True, default=5)
     sale = db.Column("Sale", db.Integer, nullable=True, default=0)
-    membersOnly = db.Column("MembersOnly", db.Boolean, nullable=True, default=False)
+    available = db.Column("Available", db.Boolean, nullable=False, default=True)
+    membersOnly = db.Column("MembersOnly", db.Boolean, nullable=False, default=False)
 
     def __repr__():
         return "<Item %s>" % (gameItemId)
