@@ -10,6 +10,7 @@ from webargs.flaskparser import use_args
 
 from app import db, marsh
 from models.user import User, UserSchema
+from models.inventory import Inventory, InventorySchema
 from models.betaticket import BetaTicket, BetaTicketSchema
 
 user_schema = UserSchema(many=False)
@@ -58,12 +59,20 @@ class IssueTicket(Resource):
         return ticket_schema.dump(ticket).data
 
 class CreatePlayer(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument("username", type=str, required=True)
+    parser.add_argument("password", type=str, required=True)
+    parser.add_argument("email", type=str, required=True)
+    parser.add_argument("alphakey", type=str, required=True)
     def post(self):
-        args = request.get_json(force=True)
+        # Maybe far away..
+        # Or maybe real nearby...
+        # args = request.get_json(force=True)
+        args = self.parser.parse_args()
         username = args["username"].strip()
         password = args["password"].strip()
         email_address = args["email"].strip()
-        appearance = args["appearance"].strip()
+        appearance = "1^0^2^2^3^2^4^2^6^0^7^4^8^0^5^0"
         alphakey = args["alphakey"].strip()
         
         # Check if username is taken.
@@ -83,15 +92,15 @@ class CreatePlayer(Resource):
 
         if user is not None:
             return { "message": "The specified user already exists! " }, 400
-
+        
         else:
             user = User()
             user.username = username
             user.email = email_address
-            user.password = password
+            user.password = hashlib.sha256(str(password).encode('utf-8')).hexdigest()
             user.appearance = appearance
             user.gameTicket = alphakey
-
+        
         ticket = (
             BetaTicket.query
             .filter(BetaTicket.serialKey == alphakey)
@@ -108,4 +117,5 @@ class CreatePlayer(Resource):
         db.session.add(user)
         db.session.commit()
         
-        return { "message": "Registration successful!", 200 }
+        return { "message": "Registration successful!" }, 200
+        # return redirect("https://nodebay.com/success.txt", code=302)
