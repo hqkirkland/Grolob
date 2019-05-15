@@ -1,4 +1,5 @@
 import hashlib
+import random
 
 import jwt
 from flask import Flask, request, jsonify
@@ -51,9 +52,9 @@ class Authorize(Resource):
 			
 			return {
 				"userId": user.userId,
+				"gameTicket": user.gameTicket,
 				"access_token": access_token, 
-				"refresh_token": refresh_token,
-				"game_ticket": user.gameTicket
+				"refresh_token": refresh_token
 				}, 200
 	
 	@jwt_refresh_token_required

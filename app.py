@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
@@ -12,11 +12,19 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 from config import mariadb_connection_string, secret_session_key
 
 # Initiate app + settings
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SQLALCHEMY_DATABASE_URI"] = mariadb_connection_string
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['JWT_SECRET_KEY'] = secret_session_key
+
+
+@app.route('/Hadley/<path:path>')
+def send_js(path):
+    if (path == ""):
+        return send_from_directory('Hadley', 'index.html')
+    else:
+        return send_from_directory('Hadley', path)
 
 # Initiate data access and schemas
 api = Api(app)
