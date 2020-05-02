@@ -18,6 +18,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = mariadb_connection_string
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['JWT_SECRET_KEY'] = secret_session_key
 
+@app.route("/")
+def hello():
+    return "Welcome to Dreamland! It's not ready for you yet, though :-)\n \"Stay tuned!\""
 
 @app.route('/Hadley/<path:path>')
 def send_js(path):
@@ -31,7 +34,7 @@ api = Api(app)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 marsh = Marshmallow(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db) 
 
 from authentication import Authorize
 from userdata import GetUserdata, CreatePlayer, IssueTicket
@@ -44,5 +47,4 @@ api.add_resource(IssueTicket, '/userdata/issueticket')
 api.add_resource(CreatePlayer, '/userdata/createplayer')
 api.add_resource(ListColors, '/gamedata/colors')
 api.add_resource(ListItems, '/gamedata/itemdata/<string:item_type>')
-
 # Setup
