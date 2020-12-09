@@ -11,6 +11,7 @@ class GameItem(db.Model):
     gameItemId = db.Column("Id", db.Integer, primary_key=True)
     itemType = db.Column("ItemType", db.Enum(ItemType), nullable=False, default=ItemType.Collectible)
     itemName = db.Column("ItemName", db.String(28), nullable=False, default="?")
+    iconId = db.Column("IconId", db.Integer, nullable=True, default="0")
     description = db.Column("Description", db.String(255), nullable=False, default="This item seems broken; perhaps a High Monk should look into it..")
     layered = db.Column("Layered", db.Enum(SingleEnum), nullable=False, default=SingleEnum.N)
     cost = db.Column("Cost", db.Integer, nullable=True, default=5)

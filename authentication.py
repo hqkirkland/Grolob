@@ -1,4 +1,5 @@
 import hashlib
+import random
 
 import jwt
 from flask import Flask, request, jsonify
@@ -31,12 +32,29 @@ class Authorize(Resource):
 				}, 401
 		
 		else:
+			SEQUENCE_A = "CLOUDSPIRE"
+			SEQUENCE_B = "MEYANJUNGLE"
+			SEQUENCE_C = "MISTYISLAND"
+			SEQUENCE_D = range(0,9)
+
+			key1 = "%s%s%s%s" % (random.choice(SEQUENCE_A), random.choice(SEQUENCE_B), random.choice(SEQUENCE_D), random.choice(SEQUENCE_C))
+			key2 = "%s%s%s%s" % (random.choice(SEQUENCE_B), random.choice(SEQUENCE_D), random.choice(SEQUENCE_C), random.choice(SEQUENCE_A))
+			key3 = "%s%s%s%s" % (random.choice(SEQUENCE_C), random.choice(SEQUENCE_A), random.choice(SEQUENCE_B), random.choice(SEQUENCE_D))
+
+			game_ticket = ("%s-%s-%s") % (key1, key2, key3)
+
 			access_token = create_access_token(identity=user.userId, fresh=True)
 			refresh_token = create_refresh_token(user.userId)
+			user.gameTicket = game_ticket
+
+			db.session.add(user)
+			db.session.commit()
+			
 			return {
 				"userId": user.userId,
+				"gameTicket": user.gameTicket,
 				"access_token": access_token, 
-				"refresh_token": refresh_token 
+				"refresh_token": refresh_token
 				}, 200
 	
 	@jwt_refresh_token_required
