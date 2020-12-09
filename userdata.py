@@ -10,6 +10,7 @@ from webargs.flaskparser import use_args
 
 from app import db, marsh
 from models.user import User, UserSchema
+from models.item_type import ItemType
 from models.inventory import Inventory, InventorySchema
 from models.betaticket import BetaTicket, BetaTicketSchema
 
@@ -72,17 +73,17 @@ class CreatePlayer(Resource):
         username = args["username"].strip()
         password = args["password"].strip()
         email_address = args["email"].strip()
-        appearance = "1^0^2^2^3^2^4^2^6^0^7^4^8^0^5^0"
+        appearance = "67^0^44^2^34^2^24^2^94^0^72^1^51^0^61^0"
         alphakey = args["alphakey"].strip()
         
-        # Check if username is taken.
+        # Check if email is taken.
         user = (
 			User.query
 			.filter(User.email == email_address)
 			.one_or_none()
 		)
         
-        # Check if email is taken.
+        # Check if username is taken.
         if user is None:
             user = (
                 User.query
@@ -119,3 +120,22 @@ class CreatePlayer(Resource):
         
         return { "message": "Registration successful!" }, 200
         # return redirect("https://nodebay.com/success.txt", code=302)
+
+class GetInventory(Resource):
+    # Need to remove parser in favor of webargs.
+    parser = reqparse.RequestParser()
+
+    # @jwt_required
+    def get(self, user_id):
+        inventory = (
+            Inventory.query
+			.filter(Inventory.userId == user_id)
+            .all()
+		)
+        
+        if user is None:
+            return { "message": "The specified user does not exist." }, 404
+        
+        else:
+            user_dump = user_schema.dump(user).data
+            return user_dump

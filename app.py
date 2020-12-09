@@ -1,11 +1,10 @@
 import os
 
 from flask import Flask, send_from_directory
-from flask_jwt_extended import JWTManager
-from flask_marshmallow import Marshmallow
-from flask_migrate import Migrate
 from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from flask_marshmallow import Marshmallow
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -34,10 +33,9 @@ api = Api(app)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 marsh = Marshmallow(app)
-migrate = Migrate(app, db) 
 
 from authentication import Authorize
-from userdata import GetUserdata, CreatePlayer, IssueTicket
+from userdata import GetUserdata, CreatePlayer, IssueTicket, GetInventory
 from gamedata import ListColors, ListItems
 
 # Register endpoints
@@ -47,4 +45,5 @@ api.add_resource(IssueTicket, '/userdata/issueticket')
 api.add_resource(CreatePlayer, '/userdata/createplayer')
 api.add_resource(ListColors, '/gamedata/colors')
 api.add_resource(ListItems, '/gamedata/itemdata/<string:item_type>')
+api.add_resource(GetInventory, '/userdata/inventory/<int:user_id>')
 # Setup
