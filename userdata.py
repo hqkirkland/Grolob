@@ -4,7 +4,6 @@ import random
 import jwt
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity
-from flask_restful import Resource, reqparse
 from webargs import fields
 from webargs.flaskparser import use_args
 from flask.views import MethodView
@@ -19,7 +18,6 @@ ticket_schema = BetaTicketSchema(many=False)
 
 class GetUserdata(MethodView):
     # Need to remove parser in favor of webargs.
-    parser = reqparse.RequestParser()
 
     @jwt_required
     def get(self, user_id):
@@ -37,7 +35,6 @@ class GetUserdata(MethodView):
             return user_dump
         
 class IssueTicket(MethodView):
-    parser = reqparse.RequestParser()
 
     def get(self):
         SEQUENCE_A = "CLOUDSPIRE"
@@ -60,16 +57,11 @@ class IssueTicket(MethodView):
         return ticket_schema.dump(ticket).data
 
 class CreatePlayer(MethodView):
-    parser = reqparse.RequestParser()
-    parser.add_argument("username", type=str, required=True)
-    parser.add_argument("password", type=str, required=True)
-    parser.add_argument("email", type=str, required=True)
-    parser.add_argument("alphakey", type=str, required=True)
-    def post(self):
-        # Maybe far away..
-        # Or maybe real nearby...
-        # args = request.get_json(force=True)
-        args = self.parser.parse_args()
+
+    @use_args({'username': fields.Str(required=True), 'password': fields.Str(required=True), 
+    'email': fields.Str(required=True), 'alphakey': fields.Str(required=True)})
+    def post(self, args):
+
         username = args["username"].strip()
         password = args["password"].strip()
         email_address = args["email"].strip()
@@ -123,7 +115,6 @@ class CreatePlayer(MethodView):
 
 class GetInventory(MethodView):
     # Need to remove parser in favor of webargs.
-    parser = reqparse.RequestParser()
 
     # @jwt_required
     def get(self, user_id):
