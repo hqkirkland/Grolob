@@ -1,5 +1,6 @@
 import hashlib
 import random
+from flask.views import MethodView
 
 import jwt
 from flask import Flask, request, jsonify
@@ -13,7 +14,7 @@ from models.betaticket import BetaTicket, BetaTicketSchema
 
 user_schema = UserSchema(many=False)
 
-class Authorize(Resource):
+class Authorize(MethodView):
 	parser = reqparse.RequestParser()
 	parser.add_argument("username", type=str, required=True)
 	parser.add_argument("password", type=str, required=True)

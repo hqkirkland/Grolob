@@ -7,7 +7,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from flask_restful import Resource, reqparse
 from webargs import fields
 from webargs.flaskparser import use_args
-
+from flask.views import MethodView
 from app import db, marsh
 from models.user import User, UserSchema
 from models.item_type import ItemType
@@ -17,7 +17,7 @@ from models.betaticket import BetaTicket, BetaTicketSchema
 user_schema = UserSchema(many=False)
 ticket_schema = BetaTicketSchema(many=False)
 
-class GetUserdata(Resource):
+class GetUserdata(MethodView):
     # Need to remove parser in favor of webargs.
     parser = reqparse.RequestParser()
 
@@ -36,7 +36,7 @@ class GetUserdata(Resource):
             user_dump = user_schema.dump(user).data
             return user_dump
         
-class IssueTicket(Resource):
+class IssueTicket(MethodView):
     parser = reqparse.RequestParser()
 
     def get(self):
@@ -59,7 +59,7 @@ class IssueTicket(Resource):
 
         return ticket_schema.dump(ticket).data
 
-class CreatePlayer(Resource):
+class CreatePlayer(MethodView):
     parser = reqparse.RequestParser()
     parser.add_argument("username", type=str, required=True)
     parser.add_argument("password", type=str, required=True)
@@ -121,7 +121,7 @@ class CreatePlayer(Resource):
         return { "message": "Registration successful!" }, 200
         # return redirect("https://nodebay.com/success.txt", code=302)
 
-class GetInventory(Resource):
+class GetInventory(MethodView):
     # Need to remove parser in favor of webargs.
     parser = reqparse.RequestParser()
 
