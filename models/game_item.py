@@ -22,7 +22,7 @@ class GameItem(db.Model):
     def __repr__():
         return "<GameItem %s>" % (gameItemId)
 
-class GameItemSchema(marsh.ModelSchema):
+class GameItemSchema(marsh.SQLAlchemyAutoSchema):
     itemType = EnumField(ItemType, by_value=True)
     layered = EnumField(SingleEnum, by_value=True)
 
@@ -30,3 +30,4 @@ class GameItemSchema(marsh.ModelSchema):
         model = GameItem
         ordered = True
         sqla_session = db.session
+        load_instance = True
