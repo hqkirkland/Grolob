@@ -1,7 +1,6 @@
 import os
 
 from flask import Flask, send_from_directory
-from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
@@ -29,7 +28,6 @@ def send_js(path):
         return send_from_directory('Hadley', path)
 
 # Initiate data access and schemas
-api = Api(app)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 marsh = Marshmallow(app)
@@ -39,11 +37,11 @@ from userdata import GetUserdata, CreatePlayer, IssueTicket, GetInventory
 from gamedata import ListColors, ListItems
 
 # Register endpoints
-api.add_resource(Authorize, '/auth/signin')
-api.add_resource(GetUserdata, '/userdata/<int:user_id>')
-api.add_resource(IssueTicket, '/userdata/issueticket')
-api.add_resource(CreatePlayer, '/userdata/createplayer')
-api.add_resource(ListColors, '/gamedata/colors')
-api.add_resource(ListItems, '/gamedata/itemdata/<string:item_type>')
-api.add_resource(GetInventory, '/userdata/inventory/<int:user_id>')
+app.add_url_rule('/auth/signin', view_func=Authorize.as_view('authorize'))
+app.add_url_rule('/userdata/<int:user_id>', view_func=GetUserdata.as_view('user_get_data'))
+app.add_url_rule('/userdata/issueticket', view_func=IssueTicket.as_view('user_issue_ticket'))
+app.add_url_rule('/userdata/createplayer', view_func=CreatePlayer.as_view('user_create_player'))
+app.add_url_rule('/userdata/inventory/<int:user_id>', view_func=GetInventory.as_view('user_inventory'))
+app.add_url_rule('/gamedata/colors', view_func=ListColors.as_view('gamedata_colours'))
+app.add_url_rule('/gamedata/itemdata/<string:item_type>', view_func=ListItems.as_view('gamedata_items'))
 # Setup

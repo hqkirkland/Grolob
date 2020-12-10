@@ -9,8 +9,9 @@ class BetaTicket(db.Model):
     def __repr__():
         return "<Ticket %s>" % (serialKey)
 
-class BetaTicketSchema(marsh.ModelSchema):
+class BetaTicketSchema(marsh.SQLAlchemyAutoSchema):
     class Meta:
         model = BetaTicket
         ordered = True
         sqla_session = db.session
+        load_instance = True

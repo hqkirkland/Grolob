@@ -3,8 +3,7 @@ import hashlib
 import jwt
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity
-from flask_restful import Resource, reqparse
-
+from flask.views import MethodView
 from app import db, marsh
 
 from models.color import Color, ColorSchema
@@ -15,12 +14,12 @@ color_schema = ColorSchema(many=True)
 item_schema = GameItemSchema(many=False)
 item_multi_schema = GameItemSchema(many=True)
 
-class ListColors(Resource):
+class ListColors(MethodView):
     def get(self):
         colors = Color.query.all()
         return color_schema.dump(colors).data
 
-class ListItems(Resource):
+class ListItems(MethodView):
     def get(self, item_type):
         item_list = []
         

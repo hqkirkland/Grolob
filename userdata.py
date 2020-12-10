@@ -4,10 +4,9 @@ import random
 import jwt
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity
-from flask_restful import Resource, reqparse
 from webargs import fields
 from webargs.flaskparser import use_args
-
+from flask.views import MethodView
 from app import db, marsh
 from models.user import User, UserSchema
 from models.item_type import ItemType
@@ -17,9 +16,8 @@ from models.betaticket import BetaTicket, BetaTicketSchema
 user_schema = UserSchema(many=False)
 ticket_schema = BetaTicketSchema(many=False)
 
-class GetUserdata(Resource):
+class GetUserdata(MethodView):
     # Need to remove parser in favor of webargs.
-    parser = reqparse.RequestParser()
 
     @jwt_required
     def get(self, user_id):
@@ -36,8 +34,7 @@ class GetUserdata(Resource):
             user_dump = user_schema.dump(user).data
             return user_dump
         
-class IssueTicket(Resource):
-    parser = reqparse.RequestParser()
+class IssueTicket(MethodView):
 
     def get(self):
         SEQUENCE_A = "CLOUDSPIRE"
@@ -59,17 +56,12 @@ class IssueTicket(Resource):
 
         return ticket_schema.dump(ticket).data
 
-class CreatePlayer(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("username", type=str, required=True)
-    parser.add_argument("password", type=str, required=True)
-    parser.add_argument("email", type=str, required=True)
-    parser.add_argument("alphakey", type=str, required=True)
-    def post(self):
-        # Maybe far away..
-        # Or maybe real nearby...
-        # args = request.get_json(force=True)
-        args = self.parser.parse_args()
+class CreatePlayer(MethodView):
+
+    @use_args({'username': fields.Str(required=True), 'password': fields.Str(required=True), 
+    'email': fields.Str(required=True), 'alphakey': fields.Str(required=True)})
+    def post(self, args):
+
         username = args["username"].strip()
         password = args["password"].strip()
         email_address = args["email"].strip()
@@ -121,9 +113,8 @@ class CreatePlayer(Resource):
         return { "message": "Registration successful!" }, 200
         # return redirect("https://nodebay.com/success.txt", code=302)
 
-class GetInventory(Resource):
+class GetInventory(MethodView):
     # Need to remove parser in favor of webargs.
-    parser = reqparse.RequestParser()
 
     # @jwt_required
     def get(self, user_id):

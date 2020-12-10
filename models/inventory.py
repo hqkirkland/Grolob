@@ -15,8 +15,9 @@ class Inventory(db.Model):
     gameItemId = db.Column("GameItemId", db.Integer, db.ForeignKey('GameItem.Id'))
     colorId = db.Column("ColorId", db.Integer, db.ForeignKey('Color.Id'))
 
-class InventorySchema(marsh.ModelSchema):
+class InventorySchema(marsh.SQLAlchemyAutoSchema):
     class Meta:
         model = Inventory
         ordered = True
         sqla_session = db.session
+        load_instance = True

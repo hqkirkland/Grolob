@@ -12,9 +12,10 @@ class User(db.Model):
     def __repr__():
         return "<User %s>" % (username)
 
-class UserSchema(marsh.ModelSchema):
+class UserSchema(marsh.SQLAlchemyAutoSchema):
     class Meta:
         model = User
         exclude = ('password', 'email', 'gameTicket')
         ordered = True
         sqla_session = db.session
+        load_instance = True

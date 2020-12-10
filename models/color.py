@@ -17,9 +17,10 @@ class Color(db.Model):
     def __repr__():
         return "<Color %s>" % (colorId)
 
-class ColorSchema(marsh.ModelSchema):
+class ColorSchema(marsh.SQLAlchemyAutoSchema):
     itemType = EnumField(ItemType, by_value=True)
     class Meta:
         model = Color
         ordered = True
         sqla_session = db.session
+        load_instance = True

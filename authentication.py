@@ -1,10 +1,12 @@
 import hashlib
 import random
+from flask.views import MethodView
 
 import jwt
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity
-from flask_restful import Resource, reqparse
+from webargs import fields
+from webargs.flaskparser import use_args
 
 from app import db
 
@@ -13,13 +15,12 @@ from models.betaticket import BetaTicket, BetaTicketSchema
 
 user_schema = UserSchema(many=False)
 
-class Authorize(Resource):
-	parser = reqparse.RequestParser()
-	parser.add_argument("username", type=str, required=True)
-	parser.add_argument("password", type=str, required=True)
+class Authorize(MethodView):
 
-	def post(self):
-		login = self.parser.parse_args()
+	@use_args({"username": fields.Str(required=True), "password": fields.Str(required=True)}, location="json")
+	def post(self, args):
+		print(args)
+		login = args
 		user = (
 			User.query
 			.filter((User.username == login["username"]) | (User.email == login["username"]))
