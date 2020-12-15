@@ -17,7 +17,7 @@ item_multi_schema = GameItemSchema(many=True)
 class ListColors(MethodView):
     def get(self):
         colors = Color.query.all()
-        return color_schema.dump(colors).data
+        return color_schema.dump(colors)
 
 class ListItems(MethodView):
     def get(self, item_type):

@@ -15,10 +15,9 @@ from models.betaticket import BetaTicket, BetaTicketSchema
 
 user_schema = UserSchema(many=False)
 ticket_schema = BetaTicketSchema(many=False)
+inventory_schema = InventorySchema(many=True)
 
 class GetUserdata(MethodView):
-    # Need to remove parser in favor of webargs.
-
     @jwt_required
     def get(self, user_id):
         user = (
@@ -31,7 +30,7 @@ class GetUserdata(MethodView):
             return { "message": "The specified user does not exist." }, 404
         
         else:
-            user_dump = user_schema.dump(user).data
+            user_dump = user_schema.dump(user)
             return user_dump
         
 class IssueTicket(MethodView):
@@ -54,7 +53,7 @@ class IssueTicket(MethodView):
         db.session.add(ticket)
         db.session.commit()
 
-        return ticket_schema.dump(ticket).data
+        return ticket_schema.dump(ticket)
 
 class CreatePlayer(MethodView):
 
@@ -124,9 +123,9 @@ class GetInventory(MethodView):
             .all()
 		)
         
-        if user is None:
+        if inventory is None:
             return { "message": "The specified user does not exist." }, 404
         
         else:
-            user_dump = user_schema.dump(user).data
-            return user_dump
+            inventory_dump = inventory_schema.dump(inventory)
+            return inventory_dump

@@ -1,8 +1,8 @@
 import hashlib
 import random
-from flask.views import MethodView
 
 import jwt
+from flask.views import MethodView
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity
 from webargs import fields
@@ -16,15 +16,14 @@ from models.betaticket import BetaTicket, BetaTicketSchema
 user_schema = UserSchema(many=False)
 
 class Authorize(MethodView):
-
 	@use_args({"username": fields.Str(required=True), "password": fields.Str(required=True)}, location="json")
 	def post(self, args):
 		print(args)
-		login = args
+		loginVars = args
 		user = (
 			User.query
-			.filter((User.username == login["username"]) | (User.email == login["username"]))
-			.filter(User.password == hashlib.sha256(str(login["password"]).encode('utf-8')).hexdigest().upper())
+			.filter((User.username == loginVars["username"]) | (User.email == loginVars["username"]))
+			.filter(User.password == hashlib.sha256(str(loginVars["password"]).encode('utf-8')).hexdigest().upper())
 			.one_or_none()
 		)
 
