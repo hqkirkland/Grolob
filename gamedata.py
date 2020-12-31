@@ -1,7 +1,7 @@
 import hashlib
 
 import jwt
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity
 from flask.views import MethodView
 from app import db, marsh
@@ -17,11 +17,12 @@ item_multi_schema = GameItemSchema(many=True)
 class ListColors(MethodView):
     def get(self):
         colors = Color.query.all()
-        return color_schema.dump(colors)
+        result_set = color_schema.jsonify(colors)
+        
+        return make_response(result_set, 200)
 
 class ListItems(MethodView):
     def get(self, item_type):
-        item_list = []
         
         if item_type == "all":
             item_set = (
@@ -39,16 +40,6 @@ class ListItems(MethodView):
 
         else:
             return { "message": "Could not locate any items of that type." }, 404
-
-        for item in item_set:
-            item_row = (
-                item.gameItemId,
-                item.itemType.value,
-                item.itemName,
-                item.description,
-                item.layered.value
-            )
-
-            item_list.append(item_row)
-            
-        return item_list
+        
+        result_set = item_multi_schema.jsonify(item_set)
+        return make_response(result_set, 200)

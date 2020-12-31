@@ -12,7 +12,7 @@ class GameItem(db.Model):
     itemType = db.Column("ItemType", db.Enum(ItemType), nullable=False, default=ItemType.Collectible)
     itemName = db.Column("ItemName", db.String(36), nullable=False, default="?")
     setId = db.Column("SetId", db.Integer, nullable=True, default="0")
-    description = db.Column("Description", db.String(255), nullable=False, default="This item seems broken; perhaps a High Monk should look into it..")
+    itemDesc = db.Column("Description", db.String(255), nullable=False, default="This item seems broken; perhaps a High Monk should look into it..")
     layered = db.Column("Layered", db.Enum(SingleEnum), nullable=False, default=SingleEnum.N)
     cost = db.Column("Cost", db.Integer, nullable=True, default=5)
     sale = db.Column("Sale", db.Integer, nullable=True, default=0)

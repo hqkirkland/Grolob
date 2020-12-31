@@ -108,14 +108,11 @@ class CreatePlayer(MethodView):
 
         db.session.add(user)
         db.session.commit()
-        
+
         return { "message": "Registration successful!" }, 200
-        # return redirect("https://nodebay.com/success.txt", code=302)
 
 class GetInventory(MethodView):
-    # Need to remove parser in favor of webargs.
-
-    # @jwt_required
+    @jwt_required
     def get(self, user_id):
         inventory = (
             Inventory.query
